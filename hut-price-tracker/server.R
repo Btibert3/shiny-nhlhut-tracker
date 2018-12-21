@@ -53,14 +53,18 @@ shinyServer(function(input, output, session) {
     #                          bnprice = bnprice)
     
     ## ssend the data to neo4j
-    CQL = "CREATE (n:Price {player_id:%s, startprice:%d, currentprice:%d, bnprice:%d})"
+    CQL = "CREATE (n:Price {player_id:%s, 
+                            startprice:%d, 
+                            currentprice:%d, 
+                            bnprice:%d,
+                            timestamp: datetime({ timezone: 'America/Los Angeles' }) })"
     CYPHER = sprintf(CQL, playerid, startprice, currentprice, bnprice)
     call_api(CYPHER, con, output="json")
     rm(CQL, CYPHER)
 
     ## clear the inputs
     updateNumericInput(session, "startprice", value = "")
-    updateNumericInput(session, "current", value = "")
+    updateNumericInput(session, "current", value = "0")
     updateNumericInput(session, "buynow", value = "")
     updateSelectizeInput(session, 'player', 
                          choices = hutdb$search_name, 
