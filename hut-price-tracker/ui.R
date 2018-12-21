@@ -10,9 +10,9 @@ fluidPage(
   selectizeInput("player", label="Player", 
                  choices=NULL,  
                  multiple=TRUE),
+  numericInput("current", "Current Price", value="0"),
   numericInput("buynow", "Buy Now Pice", value=""),
   numericInput("startprice", "Starting Price", value=""),
-  numericInput("current", "Current Price", value="0"),
   br(),
   actionButton("submit", "Submit")
     
