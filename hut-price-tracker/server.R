@@ -1,0 +1,69 @@
+#
+# This is the server logic of a Shiny web application. You can run the
+# application by clicking 'Run App' above.
+#
+
+## load the packages
+library(shiny)
+suppressPackageStartupMessages(library(dplyr))
+library(neo4r)
+
+## connect and send to neo4j, then disconnect
+con <- neo4j_api$new(url = "http://localhost:7474", 
+                     user = "neo4j", 
+                     password = "password")
+
+## load the data every time the server loads
+hutdb = readRDS("../data/hut.rds")
+
+## create a search term to help with overall and type
+hutdb = hutdb %>% 
+  transform(search_name = paste0(ovr, "-", card, "-", player)) %>% 
+  arrange(desc(search_name))
+
+
+# Define server logic required to draw a histogram
+shinyServer(function(input, output, session) {
+  
+  ## update the players
+  updateSelectizeInput(session, 'player', 
+                       choices = hutdb$search_name, 
+                       server = TRUE)
+  
+  ## get the player selection-- setup as multi for UX but only keep 1
+  ##https://stackoverflow.com/questions/21515800/subset-a-data-frame-based-on-user-input-shiny
+  player_sel = reactive({
+    if(length(input$player)>0){
+      x = filter(hutdb, search_name==input$player)
+      return(x)
+    }
+  })
+  
+  ## write the data to neo4j from the inputs
+  observeEvent(input$submit, {
+    ## grab the data elements
+    startprice = isolate(input$startprice)
+    currentprice = isolate(input$current)
+    bnprice = isolate(input$buynow)
+    playerid = isolate(player_sel()$id)
+    ## write the data to the table
+    # submit_data = data.frame(id = playerid,
+    #                          startprice = startprice,
+    #                          currentprice = currentprice,
+    #                          bnprice = bnprice)
+    
+    ## ssend the data to neo4j
+    CQL = "CREATE (n:Price {player_id:%s, startprice:%d, currentprice:%d, bnprice:%d})"
+    CYPHER = sprintf(CQL, playerid, startprice, currentprice, bnprice)
+    call_api(CYPHER, con, output="json")
+    rm(CQL, CYPHER)
+
+    ## clear the inputs
+    updateNumericInput(session, "startprice", value = "")
+    updateNumericInput(session, "current", value = "")
+    updateNumericInput(session, "buynow", value = "")
+    updateSelectizeInput(session, 'player', 
+                         choices = hutdb$search_name, 
+                         server = TRUE, selected = "")
+  })
+})
