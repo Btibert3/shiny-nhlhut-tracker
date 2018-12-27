@@ -119,7 +119,7 @@ if (LISTARGS) {
   ## bring the data back (yes, ineffecient) and save to data/hutdb.rds
   x = call_api("MATCH (n:Card) RETURN n", con, type="row", output="r")
   hutdb = x$n
-  saveRDS(hutdb, "data/hut.rds")
+  saveRDS(hutdb, "hut-price-tracker/hut.rds")
 }
 
 
