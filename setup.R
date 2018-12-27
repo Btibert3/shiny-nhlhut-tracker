@@ -116,10 +116,12 @@ if (SEEDNEO) {
 
 LISTARGS = argv$genlist
 if (LISTARGS) {
+  cat("fetching the cards from the database in the backend ....\n")
   ## bring the data back (yes, ineffecient) and save to data/hutdb.rds
   x = call_api("MATCH (n:Card) RETURN n", con, type="row", output="r")
   hutdb = x$n
   saveRDS(hutdb, "hut-price-tracker/hut.rds")
+  cat("fetch complete \n")
 }
 
 
