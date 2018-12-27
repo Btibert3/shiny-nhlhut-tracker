@@ -14,7 +14,7 @@ con <- neo4j_api$new(url = "http://localhost:7474",
                      password = "password")
 
 ## load the data every time the server loads -- loads a cache from the database to speed up
-hutdb = readRDS("../data/hut.rds")
+hutdb = readRDS("hut.rds")
 # x = call_api("MATCH (n:Card) RETURN n", con, type="row", output="r")
 # hutdb = x$n
 
