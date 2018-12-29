@@ -3,13 +3,19 @@
 # application by clicking 'Run App' above.
 #
 
+## ensure necessary packages are installed
+## not ideal for a docker situ, but get it working first
+# install.packages("remotes")
+remotes::install_github("neo4j-rstats/neo4r", quiet = TRUE)
+
+
 ## load the packages
 library(shiny)
 suppressPackageStartupMessages(library(dplyr))
 library(neo4r)
 
 ## connect and send to neo4j, then disconnect
-con <- neo4j_api$new(url = "http://localhost:7474", 
+con <- neo4j_api$new(url = "http://neo4j:7474", 
                      user = "neo4j", 
                      password = "password")
 

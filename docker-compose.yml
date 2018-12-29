@@ -2,7 +2,7 @@ version: '3'
 
 services:
   neo4j:
-    image: brock/neo4j   
+    image: brock/neo4j
     ports:
       - "7474:7474"
       - "7687:7687"
@@ -14,3 +14,16 @@ services:
       - ./neo4j/plugins:/plugins
       - ./neo4j/data:/data
       - ./neo4j/import:/import
+  shiny:
+    image: rocker/tidyverse
+    restart: always
+    user: 'root'
+    command: R -e "install.packages('shiny')"
+    command: R -e "shiny::runApp(appDir = '/app', port=3838, host='0.0.0.0')"
+    ports:
+      - '3838:3838'
+    volumes:
+      - ./hut-price-tracker/app:/app
+      - ./setup.R:/setup.R
+    links:
+      - neo4j
