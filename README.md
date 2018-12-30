@@ -54,17 +54,18 @@ git clone https://github.com/Btibert3/shiny-nhlhut-tracker.git
 2.  Build the custom-ish neo4j Image
 
 ```
-cd shiny-nhlhut-tracker/neo4j/
-docker build -t brock/neo4j .
+cd shiny-nhlhut-tracker/
+docker build -t brock/neo4j ./neo4j
 ```
 
 3.  Fire up the App
 
 ```
-cd ..
 docker-compose up
 ```
 
 This will keep the app running in the shell, which is handy for first time debugging, and prior to firing up, pull the rocker/tidyverse container if it has not already been pulled.  
+
+The first time you fire up the app, you will need to locate the address of your neo4j browser and set the root password to `password`.  The Shiny app uses these creds to hit the neo4j.  Never do this in production.
 
 If you are comfortable, you can run in detached model with `docker-compose up -d`.
