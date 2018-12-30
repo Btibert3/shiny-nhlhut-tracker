@@ -64,7 +64,20 @@ docker build -t brock/neo4j ./neo4j
 docker-compose up
 ```
 
+
 This will keep the app running in the shell, which is handy for first time debugging, and prior to firing up, pull the rocker/tidyverse container if it has not already been pulled.  
+
+> NOTE:  The first time that you fire up neo4j, we will need to set a password, as the browser settings are not secure and we can't do it that way.  We can run the command below to change the password for user neo4j to, well, password.
+
+
+We will do this by bashing into our neo4j container, adding curl, and then hitting the db locally to change the password.
+
+
+
+```
+apk add curl
+curl -H "Content-Type: application/json" -X POST -d '{"password":"password"}' -u neo4j:neo4j http://localhost:7474/user/neo4j/password
+```
 
 The first time you fire up the app, you will need to locate the address of your neo4j browser and set the root password to `password`.  The Shiny app uses these creds to hit the neo4j.  Never do this in production.
 
