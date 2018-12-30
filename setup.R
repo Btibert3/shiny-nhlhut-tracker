@@ -3,6 +3,9 @@
 ## global options
 options(stringsAsFactors = FALSE)
 
+## install
+install.packages("optparse")
+
 ## load the libraries
 library(neo4r)
 library(optparse)
@@ -14,8 +17,8 @@ library(stringr)
 
 
 ## connect to the running neo4j database that is running locally in docker
-con <- neo4j_api$new(url = "http://localhost:7474", 
-                     user = "neo4j", 
+con <- neo4j_api$new(url = "http://localhost:7474",
+                     user = "neo4j",
                      password = "password")
 
 ## ensure that the connection to the datastore is active
@@ -29,12 +32,12 @@ parser <- OptionParser()
 parser <- add_option(parser, c("--initneo"),
                      action = "store_true",
                      default = FALSE,
-                     help = str_trim("This will delete all data, and ensure proper 
+                     help = str_trim("This will delete all data, and ensure proper
                              indexes are setup."))
 parser <- add_option(parser, c("--seedneo"),
                      action = "store_true",
                      default = FALSE,
-                     help = str_trim("This will collect a new dataset and 
+                     help = str_trim("This will collect a new dataset and
                                      add any new cards to the database."))
 parser <- add_option(parser, c("--genlist"),
                      action = "store_true",
@@ -69,7 +72,7 @@ if (SEEDNEO) {
   ## ensure that the constraints are there
   call_api("CREATE CONSTRAINT ON (n:Card) ASSERT n.id IS UNIQUE;", con, output="r")
   cat("constraints are in place\n")
-  
+
   ## check the sequence number of N = 5800 below, NEW CARDS ADDED so need to raise
   cat("paging through the dataset and ensuring that the cards are in the database, skipping otherwise\n")
   for (i in seq(0, 5900, 100)) {
@@ -95,9 +98,9 @@ if (SEEDNEO) {
       RETURN n
       "
       player = players[p, ]
-      CQL = sprintf(CQL, player$id, 
-                    player$ovr, 
-                    player$card, 
+      CQL = sprintf(CQL, player$id,
+                    player$ovr,
+                    player$card,
                     player$team,
                     player$player,
                     player$position,
@@ -108,9 +111,9 @@ if (SEEDNEO) {
     rm(URL2, results, players, CQL)
     message("finished ", i, "\n")
   }
-  
 
-} 
+
+}
 
 ##TODO:  use the create date for the card and only flag "new" records for import by looking at the max create date in neo first
 
@@ -130,5 +133,3 @@ if (WIPEPRICE) {
   call_api("MATCH (n:Price) DETACH DELETE n", con, type="row", output="r")
   cat("deleted all of the price nodes\n")
 }
-
-

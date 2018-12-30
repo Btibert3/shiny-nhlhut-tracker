@@ -67,18 +67,44 @@ docker-compose up
 
 This will keep the app running in the shell, which is handy for first time debugging, and prior to firing up, pull the rocker/tidyverse container if it has not already been pulled.  
 
-> NOTE:  The first time that you fire up neo4j, we will need to set a password, as the browser settings are not secure and we can't do it that way.  We can run the command below to change the password for user neo4j to, well, password.
+> NOTE:  We are manually creating the user `neo4j` and the password for that user as `password`, which is only for demo purposes.
 
+If you are comfortable, you can always run in detached model with `docker-compose up -d`.
 
-We will do this by bashing into our neo4j container, adding curl, and then hitting the db locally to change the password.
-
-
+To confirm that we can connect to the running server from our R/Shiny container, let's get into the container and run R so that we can poke around.
 
 ```
-apk add curl
-curl -H "Content-Type: application/json" -X POST -d '{"password":"password"}' -u neo4j:neo4j http://localhost:7474/user/neo4j/password
+docker exec -it ef516832c810 R
 ```
 
-The first time you fire up the app, you will need to locate the address of your neo4j browser and set the root password to `password`.  The Shiny app uses these creds to hit the neo4j.  Never do this in production.
+We can find the id for our container with the `docker ps` command, in order to find the container of interest.
 
-If you are comfortable, you can run in detached model with `docker-compose up -d`.
+
+We are now using command-line (Base) R and can execute commands interactively.  
+
+```
+## install the package using devtools from github
+devtools::install_github("neo4j-rstats/neo4r")
+library(neo4r)
+## point a connection at the server
+con = neo4j_api$new(user="neo4j", password="password", url="http://neo4j:7474")
+## confirm that we are connected with a 200
+con$ping()
+con$get_version()
+## confirm that we have an empty database
+call_api("MATCH (n) RETURN COUNT(n) as total", con)
+## exit and go back to our host machine running our docker images
+q()
+```
+
+Above the big thing to call out is the `url` parameter in the `con` object.  Instead of using `localhost`, we specified a connection from our R container to the other running Neo4j, and specified that with the `neo4j` name in `docker-compose.yml`.  
+
+> Because containers are isolated by default, this setting allows us to create a connection between the two and avoid inputting a valid network address.
+
+To exit from the interactive 'R' terminal within our container, we used `q()`.
+
+Ok, thinks are looking good, but we want to seed our database with data and get our UI layer ready to go.
+
+For this, we can use `setup.R` which we copied from the github repo to ~, and allows us to script commands within the `R` container.
+
+First,  
