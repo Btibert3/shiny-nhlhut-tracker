@@ -14,10 +14,7 @@ services:
       - ./neo4j/plugins:/plugins
       - ./neo4j/data:/data
       - ./neo4j/import:/import
-    deploy:
-      resources:
-        reservations:
-          memory: 2048
+
 
   shiny:
     image: rocker/tidyverse

@@ -43,6 +43,8 @@ https://www.bjoern-hartmann.de/post/learn-how-to-dockerize-a-shinyapp-in-7-steps
 
 ## setup
 
+Fire up DO with a droplet > 2gb of memory, get 3gb for 2.2cents/hour.
+
 1.  Clone the repo for the app
 
 ```
