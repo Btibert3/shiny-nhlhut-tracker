@@ -8,7 +8,7 @@ data store.
 
 ## Usage
 
-1.  Build the Docker Images 
+1.  Build the Docker Images
 
 - Neo4j
 
@@ -41,5 +41,28 @@ https://www.bjoern-hartmann.de/post/learn-how-to-dockerize-a-shinyapp-in-7-steps
 
 
 
+## setup
 
+1.  Clone the repo for the app
 
+```
+git clone https://github.com/Btibert3/shiny-nhlhut-tracker.git
+```
+
+2.  Build the custom-ish neo4j Image
+
+```
+cd shiny-nhlhut-tracker/neo4j/
+docker build -t brock/neo4j .
+```
+
+3.  Fire up the App
+
+```
+cd ..
+docker-compose up
+```
+
+This will keep the app running in the shell, which is handy for first time debugging, and prior to firing up, pull the rocker/tidyverse container if it has not already been pulled.  
+
+If you are comfortable, you can run in detached model with `docker-compose up -d`.
