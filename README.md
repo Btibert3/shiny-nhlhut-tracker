@@ -74,7 +74,7 @@ If you are comfortable, you can always run in detached model with `docker-compos
 To confirm that we can connect to the running server from our R/Shiny container, let's get into the container and run R so that we can poke around.
 
 ```
-docker exec -it ef516832c810 R
+docker exec -it b3c94d644dec R
 ```
 
 We can find the id for our container with the `docker ps` command, in order to find the container of interest.
@@ -107,4 +107,8 @@ Ok, thinks are looking good, but we want to seed our database with data and get 
 
 For this, we can use `setup.R` which we copied from the github repo to ~, and allows us to script commands within the `R` container.
 
-First,  
+First, we will double-confirm (more for example purposes) that we can wipe our entire neo4j database.
+
+```
+docker exec -it b3c94d644dec Rscript setup.R --initneo
+```

@@ -17,7 +17,7 @@ library(stringr)
 
 
 ## connect to the running neo4j database that is running locally in docker
-con <- neo4j_api$new(url = "http://localhost:7474",
+con <- neo4j_api$new(url = "http://neo4j:7474",
                      user = "neo4j",
                      password = "password")
 
