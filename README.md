@@ -6,24 +6,7 @@ Lookup an NHL HUT card, accurately, and allow the user to log the price to a
 data store.
 
 
-## Usage
-
-1.  Build the Docker Images
-
-- Neo4j
-
-```
- docker build -t brock/neo4j ./docker/neo4j
-```
-
--- Run the instance from within docker
-
-Takes ~ 10-20s for neo4j to spin up and get to localhost:7474/browser.  
-First time logging in will need to change the neo4j/neo4j user/pass combo which is default on a clean setup, as security is in-place by default.
-
-```
-docker-compose up -d .
-```
+> INCOMPLETE, failed at seeding the data with setup.R command line propmpts
 
 ## Notes before writing up
 
@@ -111,4 +94,10 @@ First, we will double-confirm (more for example purposes) that we can wipe our e
 
 ```
 docker exec -it b3c94d644dec Rscript setup.R --initneo
+```
+
+Now we will crawl and parse the skater cards into neo4j for the first time.
+
+```
+docker exec -it b3c94d644dec Rscript setup.R --seedneo
 ```
